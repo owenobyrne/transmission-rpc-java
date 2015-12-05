@@ -2,6 +2,7 @@ package nl.stil4m.transmission.rpc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.google.common.base.Strings;
 import nl.stil4m.transmission.http.InvalidResponseStatus;
 import nl.stil4m.transmission.http.RequestExecutor;
 import nl.stil4m.transmission.http.RequestExecutorException;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +88,18 @@ public class RpcClient {
     }
 
     protected HttpPost createPost() {
-        return new HttpPost(configuration.getHost());
+        HttpPost httpPost = new HttpPost(configuration.getHost());
+
+        if (!Strings.isNullOrEmpty(configuration.getUsername()) || !Strings.isNullOrEmpty(configuration.getPassword())) {
+            httpPost.addHeader("Authorization", getBasicAuthenticationEncoding(configuration.getUsername(), configuration.getPassword()));
+        }
+
+        return httpPost;
+    }
+
+    private String getBasicAuthenticationEncoding(String username, String password) {
+        String userPassword = username + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(userPassword.getBytes());
     }
 
     protected DefaultHttpClient getClient() {
