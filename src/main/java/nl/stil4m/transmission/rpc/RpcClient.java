@@ -55,8 +55,8 @@ public class RpcClient {
     }
 
     private <T, V> void executeCommandInner(RpcCommand<T, V> command, Map<String, String> h) throws RequestExecutorException, InvalidResponseStatus, IOException, RpcException {
+        requestExecutor.removeAllHeaders();
         for (Map.Entry<String, String> entry : h.entrySet()) {
-            requestExecutor.removeAllHeaders();
             requestExecutor.configureHeader(entry.getKey(), entry.getValue());
         }
 
