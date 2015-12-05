@@ -81,9 +81,16 @@ public class RpcClient {
             HttpPost httpPost = createPost();
             HttpResponse result = defaultHttpClient.execute(httpPost);
             putSessionHeader(result);
+            putAuthenticationHeader();
             EntityUtils.consume(result.getEntity());
         } catch (IOException e) {
             throw new RpcException(e);
+        }
+    }
+
+    private void putAuthenticationHeader() {
+        if (!Strings.isNullOrEmpty(configuration.getUsername()) || !Strings.isNullOrEmpty(configuration.getPassword())) {
+            headers.put("Authorization", getBasicAuthenticationEncoding(configuration.getUsername(), configuration.getPassword()));
         }
     }
 
