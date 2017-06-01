@@ -44,7 +44,7 @@ public class RpcClient {
         } catch (RequestExecutorException | IOException e) {
             throw new RpcException(e);
         } catch (InvalidResponseStatus e) {
-            LOGGER.trace("Failed execute command. Now setup and try again", e);
+            LOGGER.trace("Failed execute command. Now run setup and try again", e);
             setup();
             try {
                 executeCommandInner(command, h);
